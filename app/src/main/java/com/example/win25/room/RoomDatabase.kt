@@ -3,10 +3,10 @@ package com.example.win25.room
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
-import com.example.win25.model.QuizModel
+import com.example.win25.model.BetModel
 
-@Database(entities = [QuizModel::class], version = 1)
-abstract class RoomDatabase:RoomDatabase() {
+@Database(entities = [BetModel::class], version = 1)
+abstract class RoomDatabase:androidx.room.RoomDatabase() {
     abstract fun betDao():Dao
     companion object{
         @Volatile
@@ -22,6 +22,8 @@ abstract class RoomDatabase:RoomDatabase() {
                     RoomDatabase::class.java,
                     "database"
                 ).build()
+                INSTANCE = instance
+                return instance
             }
         }
     }

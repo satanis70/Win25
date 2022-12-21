@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "tableRoom")
-data class QuizModel(
+data class BetModel(
     @PrimaryKey(autoGenerate = true)
     val id: Int?,
     @ColumnInfo(name = "position")
