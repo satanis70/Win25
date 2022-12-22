@@ -1,5 +1,6 @@
 package com.example.win25.room
 
+import androidx.lifecycle.LiveData
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -9,7 +10,7 @@ import com.example.win25.model.BetModel
 @androidx.room.Dao
 interface Dao {
     @Query("SELECT * FROM tableRoom")
-    fun getAll():List<BetModel>
+    fun getAll():LiveData<List<BetModel>>
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(betModel: BetModel)
     @Delete()

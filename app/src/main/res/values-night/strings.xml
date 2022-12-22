@@ -3,4 +3,9 @@
     <string name="home">Home</string>
     <string name="statistics">Statistics</string>
     <string name="account">Account</string>
+    <string name="enter_total_amount">Enter total amount</string>
+    <string name="validate">VALIDATE</string>
+    <string name="bet_name">Bet name</string>
+    <string name="bet_odd">Bet odd</string>
+    <string name="bet_amount">Bet amount</string>
 </resources>

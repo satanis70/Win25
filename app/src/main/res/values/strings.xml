@@ -5,4 +5,9 @@
     <string name="account">Account</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="enter_total_amount">Enter total amount</string>
+    <string name="validate">VALIDATE</string>
+    <string name="bet_name">Bet name</string>
+    <string name="bet_odd">Bet odd</string>
+    <string name="bet_amount">Bet amount</string>
 </resources>
