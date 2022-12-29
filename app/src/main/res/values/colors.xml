@@ -8,4 +8,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="round_button">#DF3939</color>
+    <color name="round_layout">#5E5353</color>
+    <color name="round_layout_win">#36C143</color>
+    <color name="round_layout_loss">#CD4E4E</color>
+
 </resources>

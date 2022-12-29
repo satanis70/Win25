@@ -7,6 +7,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
+import com.example.win25.adapter.ViewPagerAdapter
+import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -14,6 +17,21 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         loadBackground()
+        val adapter = ViewPagerAdapter(supportFragmentManager, lifecycle)
+        view_pager.adapter = adapter
+        TabLayoutMediator(tab_layout, view_pager){tab, position->
+            when(position){
+                0->{
+                    tab.text = "Home"
+                }
+                1->{
+                    tab.text = "Statistics"
+                }
+                2->{
+                    tab.text = "Account"
+                }
+            }
+        }.attach()
     }
 
     private fun loadBackground(){
@@ -27,5 +45,10 @@ class MainActivity : AppCompatActivity() {
                     constraint.background = resource
                 }
             })
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }
