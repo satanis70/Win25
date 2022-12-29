@@ -93,7 +93,6 @@ class BetAdapter(val onItemClickListener: OnItemClickListener, val listBet: List
                 winAmountBet)
         }
     }
-
     override fun getItemCount(): Int {
         return listBet.size
     }

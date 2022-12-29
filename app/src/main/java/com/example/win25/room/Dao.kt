@@ -11,14 +11,14 @@ import com.example.win25.model.BetModel
 interface Dao {
     @Query("SELECT * FROM tableRoom")
     fun getAll():LiveData<List<BetModel>>
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(betModel: BetModel)
     @Delete()
     suspend fun delete(betModel: BetModel)
     @Query("DELETE FROM tableRoom")
     suspend fun deleteDatabase()
-    @Query("UPDATE tableRoom SET status=:status WHERE position LIKE:position")
-    suspend fun update(status: String, position: Int)
-    @Query("UPDATE tableRoom SET capital=:capital WHERE position LIKE:position")
-    suspend fun updateCapital(capital:String, position: Int)
+    @Query("UPDATE tableRoom SET betStatus=:betStatus WHERE betPosition LIKE:betPosition")
+    suspend fun update(betStatus: String, betPosition: Int)
+    @Query("UPDATE tableRoom SET bankCapital=:bankCapital WHERE betPosition LIKE:betPosition")
+    suspend fun updateCapital(bankCapital:String, betPosition: Int)
 }

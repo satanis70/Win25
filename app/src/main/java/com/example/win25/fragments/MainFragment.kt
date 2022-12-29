@@ -71,7 +71,6 @@ class MainFragment : Fragment(), BetAdapter.OnItemClickListener {
             recycler_view.layoutManager = LinearLayoutManager(requireContext())
             adapter = BetAdapter(this, bettingList)
             recycler_view.adapter = adapter
-            Log.i("LIST", bettingList.toString())
         }
 
     }
@@ -86,6 +85,7 @@ class MainFragment : Fragment(), BetAdapter.OnItemClickListener {
         val odd = bettingList[position].betOdd
         val amount = bettingList[position].betAmount
         val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
+        viewModel.initDatabase()
         if (s == "win") {
             val result = odd.toDouble() * amount.toDouble()
             setPrefBank(getPrefBank()!!.toDouble() + result)
@@ -93,45 +93,71 @@ class MainFragment : Fragment(), BetAdapter.OnItemClickListener {
             textView_betAmount.text = amount
             textViewWinSum.text = result.toString()
             textViewStatus.text = s
-            viewModel.updateBet("win", position) {}
-            viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
-                recycler_view.layoutManager = LinearLayoutManager(requireContext())
-                adapter = BetAdapter(this, listBet)
-                recycler_view.adapter = adapter
+            viewModel.updateBet("win", position) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    bettingList.clear()
+                    viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
+                        bettingList.addAll(listBet)
+                        recycler_view.layoutManager = LinearLayoutManager(requireContext())
+                        adapter = BetAdapter(this@MainFragment, bettingList)
+                        recycler_view.adapter = adapter
+                    }
+                }
             }
         } else if(s=="loss"){
             val amount = bettingList[position].betAmount.toDouble()
             textViewStatus.text = s
             textViewWinSum.text = (amount * -1).toString()
-            viewModel.updateBet("loss", position) {}
-            viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
-                recycler_view.layoutManager = LinearLayoutManager(requireContext())
-                adapter = BetAdapter(this, listBet)
-                recycler_view.adapter = adapter
+            viewModel.updateBet("loss", position) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    bettingList.clear()
+                    viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
+                        Log.i("STATUS", listBet.toString())
+                        bettingList.addAll(listBet)
+                        recycler_view.layoutManager = LinearLayoutManager(requireContext())
+                        adapter = BetAdapter(this@MainFragment, bettingList)
+                        recycler_view.adapter = adapter
+                    }
+                }
             }
         } else if(s=="delete"){
+            Log.i("DELETE", bettingList.toString())
             if (bettingList[position].betStatus=="loss"){
                 var capWinLoss = getPrefBank()!!.toDouble()
                 capWinLoss += bettingList[position].betAmount.toDouble()
                 setPrefBank(capWinLoss)
                 textView_capital.text = "$capWinLoss"
                 viewModel.deleteBet(bettingList[position]){}
+                bettingList.clear()
                 viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
+                    bettingList.addAll(listBet)
+                    Log.i("DELETE", bettingList.toString())
                     recycler_view.layoutManager = LinearLayoutManager(requireContext())
-                    adapter = BetAdapter(this, listBet)
+                    adapter = BetAdapter(this, bettingList)
                     recycler_view.adapter = adapter
                 }
 
             } else if(bettingList[position].betStatus=="win"){
                 viewModel.deleteBet(bettingList[position]){
-                    viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
-                        var capWinDel = getPrefBank()!!.toDouble()
-                        capWinDel -= listBet[position].betAmount.toDouble()
-                        setPrefBank(capWinDel)
-                        textViewWinSum.text = "$capWinDel"
-                        recycler_view.layoutManager = LinearLayoutManager(requireContext())
-                        adapter = BetAdapter(this, listBet)
-                        recycler_view.adapter = adapter
+                    CoroutineScope(Dispatchers.Main).launch {
+                        bettingList.clear()
+                        viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
+                            if (listBet.isNotEmpty()){
+                                var capWinDel = getPrefBank()!!.toDouble()
+                                capWinDel -= listBet[position].betAmount.toDouble()
+                                Toast.makeText(
+                                    requireContext(),
+                                    capWinDel.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                setPrefBank(capWinDel)
+                                textViewWinSum.text = "$capWinDel"
+                                bettingList.addAll(listBet)
+                                recycler_view.layoutManager = LinearLayoutManager(requireContext())
+                                adapter = BetAdapter(this@MainFragment, bettingList)
+                                recycler_view.adapter = adapter
+                            }
+                        }
                     }
                 }
             } else {
@@ -140,9 +166,11 @@ class MainFragment : Fragment(), BetAdapter.OnItemClickListener {
                 setPrefBank(capWinLoss)
                 textView_capital.text = "$capWinLoss"
                 viewModel.deleteBet(bettingList[position]){}
+                bettingList.clear()
                 viewModel.getAllBet().observe(viewLifecycleOwner) { listBet ->
+                    bettingList.addAll(listBet)
                     recycler_view.layoutManager = LinearLayoutManager(requireContext())
-                    adapter = BetAdapter(this, listBet)
+                    adapter = BetAdapter(this, bettingList)
                     recycler_view.adapter = adapter
                 }
 
